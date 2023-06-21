@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{AA832463-A9A6-44A3-B77E-070F8E278EC0}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="dll\VisualizersDelphi10Dll.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="pkg\VisualizersDelphi10Pkg.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="consoleapp\VisualizerTester.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="tests\testapp.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="VisualizersDelphi10Dll">
+        <MSBuild Projects="dll\VisualizersDelphi10Dll.dproj"/>
+    </Target>
+    <Target Name="VisualizersDelphi10Dll:Clean">
+        <MSBuild Projects="dll\VisualizersDelphi10Dll.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VisualizersDelphi10Dll:Make">
+        <MSBuild Projects="dll\VisualizersDelphi10Dll.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VisualizersDelphi10Pkg">
+        <MSBuild Projects="pkg\VisualizersDelphi10Pkg.dproj"/>
+    </Target>
+    <Target Name="VisualizersDelphi10Pkg:Clean">
+        <MSBuild Projects="pkg\VisualizersDelphi10Pkg.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VisualizersDelphi10Pkg:Make">
+        <MSBuild Projects="pkg\VisualizersDelphi10Pkg.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="VisualizerTester">
+        <MSBuild Projects="consoleapp\VisualizerTester.dproj"/>
+    </Target>
+    <Target Name="VisualizerTester:Clean">
+        <MSBuild Projects="consoleapp\VisualizerTester.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="VisualizerTester:Make">
+        <MSBuild Projects="consoleapp\VisualizerTester.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="testapp">
+        <MSBuild Projects="tests\testapp.dproj"/>
+    </Target>
+    <Target Name="testapp:Clean">
+        <MSBuild Projects="tests\testapp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="testapp:Make">
+        <MSBuild Projects="tests\testapp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="VisualizersDelphi10Dll;VisualizersDelphi10Pkg;VisualizerTester;testapp"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="VisualizersDelphi10Dll:Clean;VisualizersDelphi10Pkg:Clean;VisualizerTester:Clean;testapp:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="VisualizersDelphi10Dll:Make;VisualizersDelphi10Pkg:Make;VisualizerTester:Make;testapp:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
