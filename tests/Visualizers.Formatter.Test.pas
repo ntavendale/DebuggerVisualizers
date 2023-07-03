@@ -70,401 +70,407 @@ type
 implementation
 
 procedure TFormatterTester.TestIntegerBin;
-var
-  LInteger: Integer;
 begin
-  LInteger := $00010001;
-  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001', TFormatter.IntegerEvalResultToBin(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($00010001, Sizeof(Integer));
+  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001', LRec.ToBin );
 
-  LInteger := $00010A0F;
-  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111', TFormatter.IntegerEvalResultToBin(IntToStr(LInteger)));
+  LRec.UInt64Val := $00010A0F;
+  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 
-  LInteger := $60010A0F;
-  Assert.AreEqual('0110 0000 0000 0001 0000 1010 0000 1111', TFormatter.IntegerEvalResultToBin(IntToStr(LInteger)));
+  LRec.UInt64Val := $60010A0F;
+  Assert.AreEqual('0110 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestCardinalBin;
-var
-  LInteger: Cardinal;
 begin
-  LInteger := $00010001;
-  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001', TFormatter.CardinalEvalResultToBin(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($00010001, Sizeof(Cardinal));
+  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001', LRec.ToBin );
 
-  LInteger := $00010A0F;
-  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111', TFormatter.CardinalEvalResultToBin(UIntToStr(LInteger)));
+  LRec.UInt64Val := $00010A0F;
+  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 
-  LInteger := $F0010A0F;
-  Assert.AreEqual('1111 0000 0000 0001 0000 1010 0000 1111', TFormatter.CardinalEvalResultToBin(UIntToStr(LInteger)));
+  LRec.UInt64Val := $F0010A0F;
+  Assert.AreEqual('1111 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestShortIntBin;
-var
-  LShortInt: ShortInt;
 begin
-  LShortInt := $01;
-  Assert.AreEqual('0000 0001', TFormatter.ShortIntEvalResultToBin(IntToStr(LShortInt)));
+  var LRec := TDebugIntValue.CreateUnsigned($01, Sizeof(ShortInt));
+  Assert.AreEqual('0000 0001', LRec.ToBin );
 
-  LShortInt := $0F;
-  Assert.AreEqual('0000 1111', TFormatter.ShortIntEvalResultToBin(IntToStr(LShortInt)));
+  LRec.UInt64Val := $0F;
+  Assert.AreEqual('0000 1111', LRec.ToBin );
 
-  LShortInt := $6F;
-  Assert.AreEqual('0110 1111', TFormatter.ShortIntEvalResultToBin(IntToStr(LShortInt)));
+  LRec.UInt64Val := $6F;
+  Assert.AreEqual('0110 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestByteBin;
-var
-  LByte: Cardinal;
 begin
-  LByte := $01;
-  Assert.AreEqual('0000 0001', TFormatter.ByteEvalResultToBin(IntToStr(LByte)));
+  var LRec := TDebugIntValue.CreateUnsigned($01, Sizeof(Byte));
+  Assert.AreEqual('0000 0001', LRec.ToBin );
 
-  LByte := $0F;
-  Assert.AreEqual('0000 1111', TFormatter.ByteEvalResultToBin(IntToStr(LByte)));
+  LRec.UInt64Val := $0F;
+  Assert.AreEqual('0000 1111', LRec.ToBin );
 
-  LByte := $AF;
-  Assert.AreEqual('1010 1111', TFormatter.ByteEvalResultToBin(IntToStr(LByte)));
+  LRec.UInt64Val := $AF;
+  Assert.AreEqual('1010 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestSmallIntBin;
-var
-  LSmallInt: SmallInt;
 begin
-  LSmallInt := $0001;
-  Assert.AreEqual('0000 0000 0000 0001', TFormatter.SmallIntEvalResultToBin(IntToStr(LSmallInt)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001, Sizeof(SmallInt));
+  Assert.AreEqual('0000 0000 0000 0001', LRec.ToBin );
 
-  LSmallInt := $0A0F;
-  Assert.AreEqual('0000 1010 0000 1111', TFormatter.SmallIntEvalResultToBin(IntToStr(LSmallInt)));
+  LRec.UInt64Val := $0A0F;
+  Assert.AreEqual('0000 1010 0000 1111', LRec.ToBin );
 
-  LSmallInt := $6A0F;
-  Assert.AreEqual('0110 1010 0000 1111', TFormatter.SmallIntEvalResultToBin(IntToStr(LSmallInt)));
+  LRec.UInt64Val := $6A0F;
+  Assert.AreEqual('0110 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestWordBin;
-var
-  LWord: Word;
 begin
-  LWord := $0001;
-  Assert.AreEqual('0000 0000 0000 0001', TFormatter.WordEvalResultToBin(UIntToStr(LWord)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001, Sizeof(Word));
+  Assert.AreEqual('0000 0000 0000 0001', LRec.ToBin );
 
-  LWord := $AA0F;
-  Assert.AreEqual('1010 1010 0000 1111', TFormatter.WordEvalResultToBin(UIntToStr(LWord)));
+  LRec.UInt64Val := $AA0F;
+  Assert.AreEqual('1010 1010 0000 1111', LRec.ToBin );
 
-  LWord := $FA0F;
-  Assert.AreEqual('1111 1010 0000 1111', TFormatter.WordEvalResultToBin(UIntToStr(LWord)));
+  LRec.UInt64Val := $FA0F;
+  Assert.AreEqual('1111 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestInt64Bin;
-var
-  LInteger: Int64;
 begin
-  LInteger := $0001000100010001;
-  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001', TFormatter.Int64EvalResultToBin(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001000100010001, Sizeof(Int64));
+  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001', LRec.ToBin );
 
-  LInteger := $00010A0F00010A0F;
-  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111 0000 0000 0000 0001 0000 1010 0000 1111', TFormatter.Int64EvalResultToBin(IntToStr(LInteger)));
+  LRec.UInt64Val := $00010A0F00010A0F;
+  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111 0000 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 
-  LInteger := $60010A0F60010A0F;
-  Assert.AreEqual('0110 0000 0000 0001 0000 1010 0000 1111 0110 0000 0000 0001 0000 1010 0000 1111', TFormatter.Int64EvalResultToBin(IntToStr(LInteger)));
+  LRec.UInt64Val := $60010A0F60010A0F;
+  Assert.AreEqual('0110 0000 0000 0001 0000 1010 0000 1111 0110 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestUInt64Bin;
-var
-  LInteger: UInt64;
 begin
-  LInteger := $0001000100010001;
-  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001', TFormatter.UInt64EvalResultToBin(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001000100010001, Sizeof(UInt64));
+  Assert.AreEqual('0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001', LRec.ToBin );
 
-  LInteger := $00010A0F00010A0F;
-  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111 0000 0000 0000 0001 0000 1010 0000 1111', TFormatter.UInt64EvalResultToBin(UIntToStr(LInteger)));
+  LRec.UInt64Val := $00010A0F00010A0F;
+  Assert.AreEqual('0000 0000 0000 0001 0000 1010 0000 1111 0000 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 
-  LInteger := $F0010A0FF0010A0F;
-  Assert.AreEqual('1111 0000 0000 0001 0000 1010 0000 1111 1111 0000 0000 0001 0000 1010 0000 1111', TFormatter.UInt64EvalResultToBin(UIntToStr(LInteger)));
+  LRec.UInt64Val := $F0010A0FF0010A0F;
+  Assert.AreEqual('1111 0000 0000 0001 0000 1010 0000 1111 1111 0000 0000 0001 0000 1010 0000 1111', LRec.ToBin );
 end;
 
 procedure TFormatterTester.TestIntegerDec;
-var
-  LInteger: Integer;
 begin
-  LInteger := $00010001;
-  Assert.AreEqual('65537', TFormatter.IntegerEvalResultToDec(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateSigned($00010001, Sizeof(Integer));
+  Assert.AreEqual('65537', LRec.ToDecimal);
 
-  LInteger := $00010A0F;
-  Assert.AreEqual('68111', TFormatter.IntegerEvalResultToDec(IntToStr(LInteger)));
+  LRec.SetSigned($00010A0F, Sizeof(Integer));
+  Assert.AreEqual('68111', LRec.ToDecimal);
 
-  LInteger := $60010A0F;
-  Assert.AreEqual('1610680847', TFormatter.IntegerEvalResultToDec(IntToStr(LInteger)));
+  LRec.SetSigned(-$00010A0F, Sizeof(Integer));
+  Assert.AreEqual('-68111', LRec.ToDecimal);
+
+  LRec.SetSigned($60010A0F, Sizeof(Integer));
+  Assert.AreEqual('1610680847', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestCardinalDec;
-var
-  LInteger: Cardinal;
 begin
-  LInteger := $00010001;
-  Assert.AreEqual('65537', TFormatter.CardinalEvalResultToDec(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($00010001, Sizeof(Cardinal));
+  Assert.AreEqual('65537', LRec.ToDecimal);
 
-  LInteger := $00010A0F;
-  Assert.AreEqual('68111', TFormatter.CardinalEvalResultToDec(UIntToStr(LInteger)));
+  LRec.SetUnsigned($00010A0F, Sizeof(Cardinal));
+  Assert.AreEqual('68111', LRec.ToDecimal);
 
-  LInteger := $F0010A0F;
-  Assert.AreEqual('4026599951', TFormatter.CardinalEvalResultToDec(UIntToStr(LInteger)));
+  LRec.SetUnsigned($F0010A0F, Sizeof(Cardinal));
+  Assert.AreEqual('4026599951', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestShortIntDec;
-var
-  LShortInt: ShortInt;
 begin
-  LShortInt := $01;
-  Assert.AreEqual('1', TFormatter.ShortIntEvalResultToDec(IntToStr(LShortInt)));
+  var LRec := TDebugIntValue.CreateSigned($01, Sizeof(ShortInt));
+  Assert.AreEqual('1', LRec.ToDecimal);
 
-  LShortInt := $0F;
-  Assert.AreEqual('15', TFormatter.ShortIntEvalResultToDec(IntToStr(LShortInt)));
+  LRec.SetSigned($0F, Sizeof(ShortInt));
+  Assert.AreEqual('15', LRec.ToDecimal);
 
-  LShortInt := $6F;
-  Assert.AreEqual('111', TFormatter.ShortIntEvalResultToDec(IntToStr(LShortInt)));
+  LRec.SetSigned(-$0F, Sizeof(ShortInt));
+  Assert.AreEqual('-15', LRec.ToDecimal);
+
+  LRec.SetSigned($6F, Sizeof(ShortInt));
+  Assert.AreEqual('111', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestByteDec;
-var
-  LByte: Cardinal;
 begin
-  LByte := $01;
-  Assert.AreEqual('1', TFormatter.ByteEvalResultToDec(IntToStr(LByte)));
+  var LRec := TDebugIntValue.CreateUnsigned($01, SizeOf(Byte));
+  Assert.AreEqual('1', LRec.ToDecimal);
 
-  LByte := $0F;
-  Assert.AreEqual('15', TFormatter.ByteEvalResultToDec(IntToStr(LByte)));
+  LRec.SetUnsigned($0F, SizeOf(Byte));
+  Assert.AreEqual('15', LRec.ToDecimal);
 
-  LByte := $AF;
-  Assert.AreEqual('175', TFormatter.ByteEvalResultToDec(IntToStr(LByte)));
+  LRec.SetUnsigned($AF, SizeOf(Byte));
+  Assert.AreEqual('175', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestSmallIntDec;
-var
-  LSmallInt: SmallInt;
 begin
-  LSmallInt := $0001;
-  Assert.AreEqual('1', TFormatter.SmallIntEvalResultToDec(IntToStr(LSmallInt)));
+  var LRec := TDebugIntValue.CreateSigned($0001, Sizeof(SmallInt));
+  Assert.AreEqual('1', LRec.ToDecimal);
 
-  LSmallInt := $0A0F;
-  Assert.AreEqual('2575', TFormatter.SmallIntEvalResultToDec(IntToStr(LSmallInt)));
+  LRec.SetSigned($0A0F, Sizeof(SmallInt));
+  Assert.AreEqual('2575', LRec.ToDecimal);
 
-  LSmallInt := $6A0F;
-  Assert.AreEqual('27151', TFormatter.SmallIntEvalResultToDec(IntToStr(LSmallInt)));
+  LRec.SetSigned(-$0A0F, Sizeof(SmallInt));
+  Assert.AreEqual('-2575', LRec.ToDecimal);
+
+  LRec.SetSigned($6A0F, Sizeof(SmallInt));
+  Assert.AreEqual('27151', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestWordDec;
-var
-  LWord: Word;
 begin
-  LWord := $0001;
-  Assert.AreEqual('1', TFormatter.WordEvalResultToDec(UIntToStr(LWord)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001, Sizeof(Word));
+  Assert.AreEqual('1', LRec.ToDecimal);
 
-  LWord := $AA0F;
-  Assert.AreEqual('43535', TFormatter.WordEvalResultToDec(UIntToStr(LWord)));
+  LRec.SetUnsigned($AA0F, Sizeof(Word));
+  Assert.AreEqual('43535', LRec.ToDecimal);
 
-  LWord := $FA0F;
-  Assert.AreEqual('64015', TFormatter.WordEvalResultToDec(UIntToStr(LWord)));
+  LRec.SetUnsigned($FA0F, Sizeof(Word));
+  Assert.AreEqual('64015', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestInt64Dec;
 var
   LInteger: Int64;
 begin
-  LInteger := $0001000100010001;
-  Assert.AreEqual('281479271743489', TFormatter.Int64EvalResultToDec(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateSigned($0001000100010001, Sizeof(Int64));
+  Assert.AreEqual('281479271743489', LRec.ToDecimal);
 
-  LInteger := $00010A0F00010A0F;
-  Assert.AreEqual('292534517565967', TFormatter.Int64EvalResultToDec(IntToStr(LInteger)));
+  LRec.SetSigned($00010A0F00010A0F, Sizeof(Int64));
+  Assert.AreEqual('292534517565967', LRec.ToDecimal);
 
-  LInteger := $60010A0F60010A0F;
-  Assert.AreEqual('6917821563769260559', TFormatter.Int64EvalResultToDec(IntToStr(LInteger)));
+  LRec.SetSigned(-$00010A0F00010A0F, Sizeof(Int64));
+  Assert.AreEqual('-292534517565967', LRec.ToDecimal);
+
+  LRec.SetSigned($60010A0F60010A0F, Sizeof(Int64));
+  Assert.AreEqual('6917821563769260559', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestUInt64Dec;
-var
-  LInteger: UInt64;
 begin
-  LInteger := $0001000100010001;
-  Assert.AreEqual('281479271743489', TFormatter.UInt64EvalResultToDec(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned($0001000100010001, Sizeof(UInt64));
+  Assert.AreEqual('281479271743489', LRec.ToDecimal);
 
-  LInteger := $00010A0F00010A0F;
-  Assert.AreEqual('292534517565967', TFormatter.UInt64EvalResultToDec(UIntToStr(LInteger)));
+  LRec.SetUnsigned($00010A0F00010A0F, Sizeof(UInt64));
+  Assert.AreEqual('292534517565967', LRec.ToDecimal);
 
-  LInteger := $F0010A0FF0010A0F;
-  Assert.AreEqual('17294115107646802447', TFormatter.UInt64EvalResultToDec(UIntToStr(LInteger)));
+  LRec.SetUnsigned($F0010A0FF0010A0F, Sizeof(UInt64));
+  Assert.AreEqual('17294115107646802447', LRec.ToDecimal);
 end;
 
 procedure TFormatterTester.TestIntegerHex;
-var
-  LInteger: Integer;
 begin
-  LInteger := 65537;
-  Assert.AreEqual('00010001', TFormatter.IntegerEvalResultToHex(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned(65537, Sizeof(Integer));
+  Assert.AreEqual('0001 0001', LRec.ToHex );
+  Assert.AreEqual('$00010001', LRec.ToHex('$', FALSE) );
 
-  LInteger := 68111;
-  Assert.AreEqual('00010A0F', TFormatter.IntegerEvalResultToHex(IntToStr(LInteger)));
+  LRec.SetSigned(68111, SizeOf(Integer));
+  Assert.AreEqual('0001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$00010A0F', LRec.ToHex('$', FALSE) );
 
-  LInteger := 1610680847;
-  Assert.AreEqual('60010A0F', TFormatter.IntegerEvalResultToHex(IntToStr(LInteger)));
+  LRec.SetSigned(-68111, SizeOf(Integer));
+  Assert.AreEqual('-0001 0A0F', LRec.ToHex );
+  Assert.AreEqual('-$00010A0F', LRec.ToHex('$', FALSE) );
+
+  LRec.SetUnsigned(1610680847, SizeOf(Integer));
+  Assert.AreEqual('6001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$60010A0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestCardinalHex;
-var
-  LInteger: Cardinal;
 begin
-  LInteger := 65537;
-  Assert.AreEqual('00010001', TFormatter.CardinalEvalResultToHex(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned(65537, Sizeof(Cardinal));
+  Assert.AreEqual('0001 0001', LRec.ToHex );
+  Assert.AreEqual('$00010001', LRec.ToHex('$', FALSE) );
 
-  LInteger := 68111;
-  Assert.AreEqual('00010A0F', TFormatter.CardinalEvalResultToHex(UIntToStr(LInteger)));
+  LRec.SetUnsigned(1610680847, SizeOf(Cardinal));
+  Assert.AreEqual('6001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$60010A0F', LRec.ToHex('$', FALSE) );
 
-  LInteger := 4026599951;
-  Assert.AreEqual('F0010A0F', TFormatter.CardinalEvalResultToHex(UIntToStr(LInteger)));
+  LRec.SetUnsigned(4026599951, SizeOf(Cardinal));
+  Assert.AreEqual('F001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$F0010A0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestShortIntHex;
 var
   LShortInt: ShortInt;
 begin
-  LShortInt := 1;
-  Assert.AreEqual('01', TFormatter.ShortIntEvalResultToHex(IntToStr(LShortInt)));
+  var LRec := TDebugIntValue.CreateSigned(1, Sizeof(ShortInt));
+  Assert.AreEqual('0001', LRec.ToHex );
+  Assert.AreEqual('$0001', LRec.ToHex('$', FALSE) );
 
-  LShortInt := 15;
-  Assert.AreEqual('0F', TFormatter.ShortIntEvalResultToHex(IntToStr(LShortInt)));
+  LRec.SetSigned(15, SizeOf(ShortInt));
+  Assert.AreEqual('000F', LRec.ToHex );
+  Assert.AreEqual('$000F', LRec.ToHex('$', FALSE) );
 
-  LShortInt := 111;
-  Assert.AreEqual('6F', TFormatter.ShortIntEvalResultToHex(IntToStr(LShortInt)));
+  LRec.SetSigned(-15, SizeOf(ShortInt));
+  Assert.AreEqual('-000F', LRec.ToHex );
+  Assert.AreEqual('-$000F', LRec.ToHex('$', FALSE) );
+
+  LRec.SetSigned(111, SizeOf(ShortInt));
+  Assert.AreEqual('006F', LRec.ToHex );
+  Assert.AreEqual('$006F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestByteHex;
-var
-  LByte: Cardinal;
 begin
-  LByte := 1;
-  Assert.AreEqual('01', TFormatter.ByteEvalResultToHex(IntToStr(LByte)));
+  var LRec := TDebugIntValue.CreateUnsigned(1, Sizeof(Byte));
+  Assert.AreEqual('0001', LRec.ToHex );
+  Assert.AreEqual('$0001', LRec.ToHex('$', FALSE) );
 
-  LByte := 15;
-  Assert.AreEqual('0F', TFormatter.ByteEvalResultToHex(IntToStr(LByte)));
+  LRec.SetUnsigned(15, SizeOf(Byte));
+  Assert.AreEqual('000F', LRec.ToHex );
+  Assert.AreEqual('$000F', LRec.ToHex('$', FALSE) );
 
-  LByte := 175;
-  Assert.AreEqual('AF', TFormatter.ByteEvalResultToHex(IntToStr(LByte)));
+  LRec.SetUnsigned(175, SizeOf(Byte));
+  Assert.AreEqual('00AF', LRec.ToHex );
+  Assert.AreEqual('$00AF', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestSmallIntHex;
-var
-  LSmallInt: SmallInt;
 begin
-  LSmallInt := 1;
-  Assert.AreEqual('0001', TFormatter.SmallIntEvalResultToHex(IntToStr(LSmallInt)));
+  var LRec := TDebugIntValue.CreateSigned(1, Sizeof(SmallInt));
+  Assert.AreEqual('0001', LRec.ToHex );
+  Assert.AreEqual('$0001', LRec.ToHex('$', FALSE) );
 
-  LSmallInt := 2575;
-  Assert.AreEqual('0A0F', TFormatter.SmallIntEvalResultToHex(IntToStr(LSmallInt)));
+  LRec.SetSigned(2575, SizeOf(SmallInt));
+  Assert.AreEqual('0A0F', LRec.ToHex );
+  Assert.AreEqual('$0A0F', LRec.ToHex('$', FALSE) );
 
-  LSmallInt := 27151;
-  Assert.AreEqual('6A0F', TFormatter.SmallIntEvalResultToHex(IntToStr(LSmallInt)));
+  LRec.SetSigned(-2575, SizeOf(SmallInt));
+  Assert.AreEqual('-0A0F', LRec.ToHex );
+  Assert.AreEqual('-$0A0F', LRec.ToHex('$', FALSE) );
+
+  LRec.SetSigned(27151, SizeOf(SmallInt));
+  Assert.AreEqual('6A0F', LRec.ToHex );
+  Assert.AreEqual('$6A0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestWordHex;
-var
-  LWord: Word;
 begin
-  LWord := 1;
-  Assert.AreEqual('0001', TFormatter.WordEvalResultToHex(UIntToStr(LWord)));
+  var LRec := TDebugIntValue.CreateUnsigned(1, Sizeof(SmallInt));
+  Assert.AreEqual('0001', LRec.ToHex );
+  Assert.AreEqual('$0001', LRec.ToHex('$', FALSE) );
 
-  LWord := 43535;
-  Assert.AreEqual('AA0F', TFormatter.WordEvalResultToHex(UIntToStr(LWord)));
+  LRec.SetUnsigned(43535, SizeOf(Word));
+  Assert.AreEqual('AA0F', LRec.ToHex );
+  Assert.AreEqual('$AA0F', LRec.ToHex('$', FALSE) );
 
-  LWord := 64015;
-  Assert.AreEqual('FA0F', TFormatter.WordEvalResultToHex(UIntToStr(LWord)));
+  LRec.SetUnsigned(64015, SizeOf(Word));
+  Assert.AreEqual('FA0F', LRec.ToHex );
+  Assert.AreEqual('$FA0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestInt64Hex;
-var
-  LInteger: Int64;
 begin
-  LInteger := 281479271743489;
-  Assert.AreEqual('0001000100010001', TFormatter.Int64EvalResultToHex(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateSigned(281479271743489, Sizeof(Int64));
+  Assert.AreEqual('0001 0001 0001 0001', LRec.ToHex );
+  Assert.AreEqual('$0001000100010001', LRec.ToHex('$', FALSE) );
 
-  LInteger := 292534517565967;
-  Assert.AreEqual('00010A0F00010A0F', TFormatter.Int64EvalResultToHex(IntToStr(LInteger)));
+  LRec.SetSigned(292534517565967, SizeOf(Int64));
+  Assert.AreEqual('0001 0A0F 0001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$00010A0F00010A0F', LRec.ToHex('$', FALSE) );
 
-  LInteger := 6917821563769260559;
-  Assert.AreEqual('60010A0F60010A0F', TFormatter.Int64EvalResultToHex(IntToStr(LInteger)));
+  LRec.SetSigned(-292534517565967, SizeOf(Int64));
+  Assert.AreEqual('-0001 0A0F 0001 0A0F', LRec.ToHex );
+  Assert.AreEqual('-$00010A0F00010A0F', LRec.ToHex('$', FALSE) );
+
+  LRec.SetSigned(6917821563769260559, SizeOf(Int64));
+  Assert.AreEqual('6001 0A0F 6001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$60010A0F60010A0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestUInt64Hex;
-var
-  LInteger: UInt64;
 begin
-  LInteger := 281479271743489;
-  Assert.AreEqual('0001000100010001', TFormatter.UInt64EvalResultToHex(UIntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned(281479271743489, SizeOf(UInt64));
+  Assert.AreEqual('0001 0001 0001 0001', LRec.ToHex );
+  Assert.AreEqual('$0001000100010001', LRec.ToHex('$', FALSE) );
 
-  LInteger := 292534517565967;
-  Assert.AreEqual('00010A0F00010A0F', TFormatter.UInt64EvalResultToHex(UIntToStr(LInteger)));
+  LRec.SetUnsigned(292534517565967, SizeOf(UInt64));
+  Assert.AreEqual('0001 0A0F 0001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$00010A0F00010A0F', LRec.ToHex('$', FALSE) );
 
-  LInteger := 17294115107646802447;
-  Assert.AreEqual('F0010A0FF0010A0F', TFormatter.UInt64EvalResultToHex(UIntToStr(LInteger)));
+  LRec.SetUnsigned(17294115107646802447, SizeOf(UInt64));
+  Assert.AreEqual('F001 0A0F F001 0A0F', LRec.ToHex );
+  Assert.AreEqual('$F0010A0FF0010A0F', LRec.ToHex('$', FALSE) );
 end;
 
 procedure TFormatterTester.TestIntegerOct;
-var
-  LInteger: Integer;
 begin
-  LInteger := 1;
-  Assert.AreEqual('001', TFormatter.IntegerEvalResultToOct(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateSigned(1, Sizeof(Integer));
+  Assert.AreEqual('001', LRec.ToOct);
 
-  LInteger := 65537;
-  Assert.AreEqual('200 001', TFormatter.IntegerEvalResultToOct(IntToStr(LInteger)));
+  LRec.SetSigned(65537, Sizeof(Integer));
+  Assert.AreEqual('200 001', LRec.ToOct);
 
-  LInteger := 68111;
-  Assert.AreEqual('205 017', TFormatter.IntegerEvalResultToOct(IntToStr(LInteger)));
+  LRec.SetSigned(68111, Sizeof(Integer));
+  Assert.AreEqual('205 017', LRec.ToOct);
 
-  LInteger := 1610680847;
-  Assert.AreEqual('014 000 205 017', TFormatter.IntegerEvalResultToOct(IntToStr(LInteger)));
+  LRec.SetSigned(-68111, Sizeof(Integer));
+  Assert.AreEqual('-205 017', LRec.ToOct);
+
+  LRec.SetSigned(1610680847, Sizeof(Integer));
+  Assert.AreEqual('014 000 205 017', LRec.ToOct);
 end;
 
 procedure TFormatterTester.TestCardinalOct;
-var
-  LInteger: Cardinal;
 begin
-  LInteger := 1;
-  Assert.AreEqual('001', TFormatter.IntegerEvalResultToOct(IntToStr(LInteger)));
+  var LRec := TDebugIntValue.CreateUnsigned(1, Sizeof(Cardinal));
+  Assert.AreEqual('001', LRec.ToOct);
 
-  LInteger := 65537;
-  Assert.AreEqual('200 001', TFormatter.CardinalEvalResultToOct(IntToStr(LInteger)));
+  LRec.SetUnsigned(65537, Sizeof(Cardinal));
+  Assert.AreEqual('200 001', LRec.ToOct);
 
-  LInteger := 68111;
-  Assert.AreEqual('205 017', TFormatter.CardinalEvalResultToOct(IntToStr(LInteger)));
+  LRec.SetUnsigned(68111, Sizeof(Cardinal));
+  Assert.AreEqual('205 017', LRec.ToOct);
 
-  LInteger := 4026599951;
-  Assert.AreEqual('036 000 205 017', TFormatter.CardinalEvalResultToOct(UIntToStr(LInteger)));
+  LRec.SetUnsigned(4026599951, Sizeof(Cardinal));
+  Assert.AreEqual('036 000 205 017', LRec.ToOct);
 end;
 
 procedure TFormatterTester.TestShortIntOct;
-var
-  LShortInt: ShortInt;
 begin
-  LShortInt := 1;
-  Assert.AreEqual('001', TFormatter.ShortIntEvalResultToOct(IntToStr(LShortInt)));
+  var LRec := TDebugIntValue.CreateSigned(1, Sizeof(ShortInt));
+  Assert.AreEqual('001', LRec.ToOct);
 
-  LShortInt := 15;
-  Assert.AreEqual('017', TFormatter.ShortIntEvalResultToOct(IntToStr(LShortInt)));
+  LRec.SetSigned(15, Sizeof(ShortInt));
+  Assert.AreEqual('017', LRec.ToOct);
 
-  LShortInt := 111;
-  Assert.AreEqual('157', TFormatter.ShortIntEvalResultToOct(IntToStr(LShortInt)));
+  LRec.SetSigned(-15, Sizeof(ShortInt));
+  Assert.AreEqual('-017', LRec.ToOct);
+
+  LRec.SetSigned(111, Sizeof(ShortInt));
+  Assert.AreEqual('157', LRec.ToOct);
 end;
 
 procedure TFormatterTester.TestByteOct;
-var
-  LByte: Cardinal;
 begin
-  LByte := 1;
-  Assert.AreEqual('001', TFormatter.ByteEvalResultToOct(IntToStr(LByte)));
+  var LRec := TDebugIntValue.CreateUnsigned(1, SizeOf(Byte));
+  Assert.AreEqual('001', LRec.ToOct);
 
-  LByte := 15;
-  Assert.AreEqual('017', TFormatter.ByteEvalResultToOct(IntToStr(LByte)));
+  LRec.SetUnsigned(15, SizeOf(Byte));
+  Assert.AreEqual('017', LRec.ToOct);
 
-  LByte := 175;
-  Assert.AreEqual('257', TFormatter.ByteEvalResultToOct(IntToStr(LByte)));
+  LRec.SetUnsigned(175, SizeOf(Byte));
+  Assert.AreEqual('257', LRec.ToOct);
 end;
 
 initialization

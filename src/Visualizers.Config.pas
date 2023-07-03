@@ -15,6 +15,8 @@ const
   HEX_PREFIX_CPP    = '0x';
   HEX_PREFIX_DELPHI = '$';
 
+  VISUALIZER_IDENTIFIER = 'OamaruVisualizer';
+
 type
   TVisualizerConfig = class
   private
@@ -100,7 +102,7 @@ var
   LKey: String;
   LData: String;
 begin
-  LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\Visualizers', [GetVer]);
+  LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\%s', [GetVer, VISUALIZER_IDENTIFIER]);
   LReg := TRegistry.Create(KEY_READ);
   try
     LReg.RootKey:= HKEY_CURRENT_USER;
@@ -120,7 +122,7 @@ var
   LReg: TRegistry;
 LKey: String;
 begin
-  LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\Visualizers', [GetVer]);
+  LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\%s', [GetVer, VISUALIZER_IDENTIFIER]);
   LReg := TRegistry.Create(KEY_ALL_ACCESS);
   try
     LReg.RootKey:= HKEY_CURRENT_USER;
@@ -131,7 +133,6 @@ begin
       LReg.CloseKey;
     end else
     begin
-      LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\Visualizers', [GetVer]);
       OutputDebugString(PChar('Could not OpenKey: ' + LKey));
     end;
   finally

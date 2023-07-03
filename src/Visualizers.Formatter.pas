@@ -3,896 +3,179 @@ unit Visualizers.Formatter;
 interface
 
 uses
-  System.SysUtils, System.Classes, WinApi.Windows, Visualizers.Config;
+  System.SysUtils, System.Classes, WinApi.Windows, Visualizers.Config,
+  System.Generics.Collections, System.Math;
+
+const
+  LHexArray: array[0..255] of String = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C', '0D', '0E', '0F', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '1A', '1B', '1C', '1D', '1E', '1F', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '2A', '2B', '2C', '2D', '2E', '2F', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '3A', '3B', '3C', '3D', '3E', '3F', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '4A', '4B', '4C', '4D', '4E', '4F', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '5A', '5B', '5C', '5D', '5E', '5F', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '6A', '6B', '6C', '6D', '6E', '6F', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '7A', '7B', '7C', '7D', '7E', '7F',
+                                        '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '8A', '8B', '8C', '8D', '8E', '8F', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99', '9A', '9B', '9C', '9D', '9E', '9F', 'A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'B0', 'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'D0', 'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'DA', 'DB', 'DC', 'DD', 'DE', 'DF', 'E0', 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', 'EA', 'EB', 'EC', 'ED', 'EE', 'EF', 'F0', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF');
+  LBinArray: array[0..255] of String = ('0000 0000', '0000 0001', '0000 0010', '0000 0011', '0000 0100', '0000 0101', '0000 0110', '0000 0111', '0000 1000', '0000 1001', '0000 1010', '0000 1011', '0000 1100', '0000 1101', '0000 1110', '0000 1111', '0001 0000', '0001 0001', '0001 0010', '0001 0011', '0001 0100', '0001 0101', '0001 0110', '0001 0111', '0001 1000', '0001 1001', '0001 1010', '0001 1011', '0001 1100', '0001 1101', '0001 1110', '0001 1111', '0010 0000', '0010 0001', '0010 0010', '0010 0011', '0010 0100', '0010 0101', '0010 0110', '0010 0111', '0010 1000', '0010 1001', '0010 1010', '0010 1011', '0010 1100', '0010 1101', '0010 1110', '0010 1111', '0011 0000', '0011 0001', '0011 0010', '0011 0011', '0011 0100', '0011 0101', '0011 0110', '0011 0111', '0011 1000', '0011 1001', '0011 1010',
+                                        '0011 1011', '0011 1100', '0011 1101', '0011 1110', '0011 1111', '0100 0000', '0100 0001', '0100 0010', '0100 0011', '0100 0100', '0100 0101', '0100 0110', '0100 0111', '0100 1000', '0100 1001', '0100 1010', '0100) 1011', '0100 1100', '0100 1101', '0100 1110', '0100 1111', '0101 0000', '0101 0001', '0101 0010', '0101 0011', '0101 0100', '0101 0101', '0101 0110', '0101 0111', '0101 1000', '0101 1001', '0101 1010', '0101 1011', '0101 1100', '0101 1101', '0101 1110', '0101 1111', '0110 0000', '0110 0001', '0110 0010', '0110 0011', '0110 0100', '0110 0101', '0110 0110', '0110 0111', '0110 1000', '0110 1001', '0110 1010', '0110 1011', '0110 1100', '0110 1101', '0110 1110', '0110 1111', '0111 0000', '0111 0001', '0111 0010', '0111 0011', '0111 0100', '0111 0101',
+                                        '0111 0110', '0111 0111', '0111 1000', '0111 1001', '0111 1010', '0111 1011', '0111 1100', '0111 1101', '0111 1110', '0111 1111', '1000 0000', '1000 0001', '1000 0010', '1000 0011', '1000 0100', '1000 0101', '1000 0110', '1000 0111', '1000 1000', '1000 1001', '1000 1010', '1000 1011', '1000 1100', '1000 1101', '1000 1110', '1000 1111', '1001 0000', '1001 0001', '1001 0010', '1001 0011', '1001 0100', '1001 0101', '1001 0110', '1001 0111', '1001 1000', '1001 1001', '1001 1010', '1001 1011', '1001 1100', '1001 1101', '1001 1110', '1001 1111', '1010 0000', '1010 0001', '1010 0010', '1010 0011', '1010 0100', '1010 0101', '1010 0110', '1010 0111', '1010 1000', '1010 1001', '1010 1010', '1010 1011', '1010 1100', '1010 1101', '1010 1110', '1010 1111', '1011 0000',
+                                        '1011 0001', '1011 0010', '1011 0011', '1011 0100', '1011 0101', '1011 0110', '1011 0111', '1011 1000', '1011 1001', '1011 1010', '1011 1011', '1011 1100', '1011 1101', '1011 1110', '1011 1111', '1100 0000', '1100 0001', '1100 0010', '1100 0011', '1100 0100', '1100 0101', '1100 0110', '1100 0111', '1100 1000', '1100 1001', '1100 1010', '1100 1011', '1100 1100', '1100 1101', '1100 1110', '1100 1111', '1101 0000', '1101 0001', '1101 0010', '1101 0011', '1101 0100', '1101 0101', '1101 0110', '1101 0111', '1101 1000', '1101 1001', '1101 1010', '1101 1011', '1101 1100', '1101 1101', '1101 1110', '1101 1111', '1110 0000', '1110 0001', '1110 0010', '1110 0011', '1110 0100', '1110 0101', '1110 0110', '1110 0111', '1110 1000', '1110 1001', '1110 1010', '1110 1011',
+                                        '1110 1100', '1110 1101', '1110 1110', '1110 1111', '1111 0000', '1111 0001', '1111 0010', '1111 0011', '1111 0100', '1111 0101', '1111 0110', '1111 0111', '1111 1000', '1111 1001', '1111 1010', '1111 1011', '1111 1100', '1111 1101', '1111 1110', '1111 1111');
 
 type
-  TFormatter = class
-  public
-    { Public declarations }
-    class function IntToOct(AValue: Integer; ADigits: Integer): String;
-
-    class function ShortIntEvalResultToHex(AValue: String): String;
-    class function ByteEvalResultToHex(AValue: String): String;
-    class function SmallIntEvalResultToHex(AValue: String): String;
-    class function WordEvalResultToHex(AValue: String): String;
-    class function IntegerEvalResultToHex(AValue: String): String;
-    class function CardinalEvalResultToHex(AValue: String): String;
-    class function Int64EvalResultToHex(AValue: String): String;
-    class function UInt64EvalResultToHex(AValue: String): String;
-
-    class function ShortIntEvalResultToDec(AValue: String): String;
-    class function ByteEvalResultToDec(AValue: String): String;
-    class function SmallIntEvalResultToDec(AValue: String): String;
-    class function WordEvalResultToDec(AValue: String): String;
-    class function IntegerEvalResultToDec(AValue: String): String;
-    class function CardinalEvalResultToDec(AValue: String): String;
-    class function Int64EvalResultToDec(AValue: String): String;
-    class function UInt64EvalResultToDec(AValue: String): String;
-
-    class function ShortIntEvalResultToOct(AValue: String): String;
-    class function ByteEvalResultToOct(AValue: String): String;
-    class function SmallIntEvalResultToOct(AValue: String): String;
-    class function WordEvalResultToOct(AValue: String): String;
-    class function IntegerEvalResultToOct(AValue: String): String;
-    class function CardinalEvalResultToOct(AValue: String): String;
-    class function Int64EvalResultToOct(AValue: String): String;
-    class function UInt64EvalResultToOct(AValue: String): String;
-
-    class function ShortIntEvalResultToBin(AValue: String): String;
-    class function ByteEvalResultToBin(AValue: String): String;
-    class function SmallIntEvalResultToBin(AValue: String): String;
-    class function WordEvalResultToBin(AValue: String): String;
-    class function IntegerEvalResultToBin(AValue: String): String;
-    class function CardinalEvalResultToBin(AValue: String): String;
-    class function Int64EvalResultToBin(AValue: String): String;
-    class function UInt64EvalResultToBin(AValue: String): String;
-
-    class function FormatShortIntEvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatByteEvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatSmallIntEvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatWordEvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatInt32EvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatUInt32EvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatInt64EvalResult(EvalResult: String; AView: String = String.Empty): String;
-    class function FormatUInt64EvalResult(EvalResult: String; AView: String = String.Empty): String;
+  TDebugIntValue = record
+    ValueSize: NativeInt;
+    IsNegative: Boolean;
+    constructor CreateUnsigned(AValue: UInt64; ASize: NativeInt); overload;
+    constructor CreateSigned(AValue: Int64; ASize: NativeInt); overload;
+    function ToHex(APrefix: String = String.Empty; ASpaces: Boolean = TRUE): String;
+    function ToBin(ASpaces: Boolean = TRUE): String;
+    function ToDecimal: String;
+    function Format(AView: String): String;
+    function ToOct: String;
+    procedure SetUnsigned(AValue: UInt64; ASize: NativeInt);
+    procedure SetSigned(AValue: Int64; ASize: NativeInt);
+    function GetInt64Value: Int64;
+    case Integer of
+      0: (UInt64Val: UInt64);
+      1: (ByteArrayVal: array[0..7] of Byte);
   end;
+
 
 implementation
 
-class function TFormatter.IntToOct(AValue: Longint; ADigits: Integer): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
+constructor TDebugIntValue.CreateUnsigned(AValue: UInt64; ASize: NativeInt);
 begin
-  LOct := TStringBuilder.Create;
+  ValueSize := ASize;
+  UInt64Val := AValue;
+  IsNegative := FALSE;
+end;
+
+constructor TDebugIntValue.CreateSigned(AValue: Int64; ASize: NativeInt);
+begin
+  ValueSize := ASize;
+  UInt64Val := Abs(AValue);
+  IsNegative := (AValue < 0);
+end;
+
+function TDebugIntValue.ToHex(APrefix: String = String.Empty; ASpaces: Boolean = TRUE): String;
+var
+  LHex: TStringBuilder;
+begin
+  LHex := TStringBuilder.Create;
   try
-    while AValue <> 0 do
+    // Windows is little endian. The least significan byte is stored in the
+    // smallest memory address i.e, the beginning of the array.
+    var LCount: Integer := Max(ValueSize, 2);
+    for var i := 0 to (LCount - 1) do
     begin
-      LRemainder  := AValue mod 8;
-      AValue := AValue div 8;
-      LOct.Insert(0,LRemainder);
+      // We display hex Word by Word with a space between.
+      if ASpaces and (LHex.Length in [4, 9, 14]) then
+        LHex.Insert(0,' ');
+
+      LHex.Insert(0, LHexArray[ ByteArrayVal[i]] );
     end;
-    Result := LOct.ToString;
+
+    if not String.IsNullOrWhitespace(APrefix) then
+      LHex.Insert(0, APrefix);
+
+    if IsNegative then
+      LHex.Insert(0, '-');
+
+    Result := LHex.ToString;
   finally
-    LOct.Free;
+    LHex.Free;
   end;
 end;
 
-class function TFormatter.ShortIntEvalResultToHex(AValue: String): String;
+function TDebugIntValue.ToBin(ASpaces: Boolean = TRUE): String;
 var
-  LInt: ShortInt;
+  LBin: TStringBuilder;
 begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToHex(LInt, 2);
+  LBin := TStringBuilder.Create;
+  try
+    // Windows is little endian. The least significan byte is stored in the
+    // smallest memory address i.e, the beginning of the array.
+    for var i := 0 to (ValueSize - 1) do
+    begin
+      // We display binary Nibble By Nibble with a min of 2.
+      if ASpaces and (LBin.Length in [9, 19, 29, 39, 49, 59, 69]) then
+        LBin.Insert(0,' ');
+      LBin.Insert(0, LBinArray[ ByteArrayVal[i]] );
+    end;
+
+    Result := LBin.ToString;
+  finally
+    LBin.Free;
+  end;
 end;
 
-class function TFormatter.ByteEvalResultToHex(AValue: String): String;
-var
-  LInt: Byte;
+function TDebugIntValue.ToDecimal: String;
 begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToHex(LInt, 2);
+  if IsNegative then
+    Result := IntToStr((0-UInt64Val))
+  else
+    Result := UIntToStr(UInt64Val)
 end;
 
-class function TFormatter.SmallIntEvalResultToHex(AValue: String): String;
-var
-  LInt: SmallInt;
+function TDebugIntValue.Format(AView: String): String;
 begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToHex(LInt, 4);
+  if VIEW_HEX = AView then
+    Result := ToHex(TVisualizerConfig.HexPrefix)
+  else if VIEW_OCT = AView then
+    Result := ToOct
+  else if VIEW_BIN = AView then
+    Result := ToBin
+  else
+    Result := ToDecimal;
 end;
 
-class function TFormatter.WordEvalResultToHex(AValue: String): String;
-var
-  LInt: Word;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToHex(LInt, 4);
-end;
 
-class function TFormatter.IntegerEvalResultToHex(AValue: String): String;
-var
-  LInt: Integer;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToHex(LInt, 8);
-end;
-
-class function TFormatter.CardinalEvalResultToHex(AValue: String): String;
-var
-  LInt: Cardinal;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToHex(LInt, 8);
-end;
-
-class function TFormatter.Int64EvalResultToHex(AValue: String): String;
-var
-  LInt: Int64;
-begin
-  LInt := StrToInt64Def(AValue, 0);
-  Result := IntToHex(LInt, 16);
-end;
-
-class function TFormatter.UInt64EvalResultToHex(AValue: String): String;
-var
-  LInt: UInt64;
-begin
-  LInt := StrToUInt64Def(AValue, 0);
-  Result := IntToHex(LInt, 16);
-end;
-
-class function TFormatter.ShortIntEvalResultToDec(AValue: String): String;
-var
-  LInt: ShortInt;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.ByteEvalResultToDec(AValue: String): String;
-var
-  LInt: Byte;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.SmallIntEvalResultToDec(AValue: String): String;
-var
-  LInt: SmallInt;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.WordEvalResultToDec(AValue: String): String;
-var
-  LInt: Word;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.IntegerEvalResultToDec(AValue: String): String;
-var
-  LInt: Integer;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.CardinalEvalResultToDec(AValue: String): String;
-var
-  LInt: Cardinal;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.Int64EvalResultToDec(AValue: String): String;
-var
-  LInt: Int64;
-begin
-  LInt := StrToInt64Def(AValue, 0);
-  Result := IntToStr(LInt);
-end;
-
-class function TFormatter.UInt64EvalResultToDec(AValue: String): String;
-var
-  LInt: UInt64;
-begin
-  LInt := StrToUInt64Def(AValue, 0);
-  Result := UIntToStr(LInt);
-end;
-
-class function TFormatter.ShortIntEvalResultToOct(AValue: String): String;
+function TDebugIntValue.ToOct: String;
 var
   LOct: TStringBuilder;
   LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: ShortInt;
+  LValue: UInt64;
+  LPad: Integer;
 begin
-  LInteger:= StrToIntDef(AValue, 0);
+  LValue := UInt64Val;
+  LPad := 3;
   LOct := TStringBuilder.Create;
   try
-    while LInteger <> 0 do
+    while LValue <> 0 do
     begin
       if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
+      begin
         LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
+        LPad := 3;
+      end;
+      LRemainder  := LValue mod 8;
+      LValue := LValue div 8;
       LOct.Insert(0,LRemainder);
+      Dec(LPad);
     end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
+    LOct.Insert(0, '0', LPad);
+    if IsNegative then
+      LOct.Insert(0, '-');
+    Result:= LOct.ToString;
   finally
     LOct.Free;
   end;
 end;
 
-class function TFormatter.ByteEvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: Byte;
+procedure TDebugIntValue.SetUnsigned(AValue: UInt64; ASize: NativeInt);
 begin
-  LInteger:= StrToIntDef(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
+  ValueSize := ASize;
+  UInt64Val := AValue;
+  IsNegative := FALSE;
 end;
 
-class function TFormatter.SmallIntEvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: SmallInt;
+procedure TDebugIntValue.SetSigned(AValue: Int64; ASize: NativeInt);
 begin
-  LInteger:= StrToIntDef(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
+  ValueSize := ASize;
+  UInt64Val := Abs(AValue);
+  IsNegative := AValue < 0;
 end;
 
-class function TFormatter.WordEvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: Word;
+function TDebugIntValue.GetInt64Value: Int64;
 begin
-  LInteger:= StrToUIntDef(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
-end;
-
-class function TFormatter.IntegerEvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: Integer;
-begin
-  LInteger:= StrToIntDef(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
-end;
-
-class function TFormatter.CardinalEvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: Cardinal;
-begin
-  LInteger:= StrToUIntDef(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
-end;
-
-class function TFormatter.Int64EvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: Int64;
-begin
-  LInteger:= StrToInt64Def(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
-end;
-
-class function TFormatter.UInt64EvalResultToOct(AValue: String): String;
-var
-  LOct: TStringBuilder;
-  LRemainder: LongInt;
-  LIntermediate: String;
-  LIndex: Integer;
-  LInteger: UInt64;
-begin
-  LInteger:= StrToUInt64Def(AValue, 0);
-  LOct := TStringBuilder.Create;
-  try
-    while LInteger <> 0 do
-    begin
-      if (LOct.Length in [3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47]) then
-        LOct.Insert(0,' ');
-      LRemainder  := LInteger mod 8;
-      LInteger := LInteger div 8;
-      LOct.Insert(0,LRemainder);
-    end;
-    LIntermediate := LOct.ToString;
-    LIndex := LIntermediate.IndexOf(' ');
-    if ((-1 = LIndex) and (LIntermediate.Length = 1)) or (1 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 2, '0')
-    else if ((-1 = LIndex) and (LIntermediate.Length = 2)) or (2 = LIndex) then
-      Result:= LIntermediate.PadLeft(LIntermediate.Length + 1, '0')
-    else
-      Result:= LIntermediate;
-  finally
-    LOct.Free;
-  end;
-end;
-
-class function TFormatter.ShortIntEvalResultToBin(AValue: String): String;
-var
-  LInt: ShortInt;
-  LByte: Byte;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  LByte := $80;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if 4 = LBinary.Length then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.ByteEvalResultToBin(AValue: String): String;
-var
-  LInt: Byte;
-  LByte: Byte;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  LByte := $80;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if 4 = LBinary.Length then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.SmallIntEvalResultToBin(AValue: String): String;
-var
-  LInt: SmallInt;
-  LByte: Word;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  LByte := $8000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14]) then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.WordEvalResultToBin(AValue: String): String;
-var
-  LInt: Word;
-  LByte: Word;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  LByte := $8000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14]) then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.IntegerEvalResultToBin(AValue: String): String;
-var
-  LInt: Integer;
-  LByte: Cardinal;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToIntDef(AValue, 0);
-  LByte := $80000000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14, 19, 24, 29, 34]) then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.CardinalEvalResultToBin(AValue: String): String;
-var
-  LInt: Cardinal;
-  LByte: Cardinal;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToUIntDef(AValue, 0);
-  LByte := $80000000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LByte > 0 do
-    begin
-      if LByte = (LByte and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14, 19, 24, 29, 34]) then
-        LBinary.Append(' ');
-      LByte := LByte shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.Int64EvalResultToBin(AValue: String): String;
-var
-  LInt: Int64;
-  LBytes: UInt64;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToInt64Def(AValue, 0);
-  LBytes :=  $8000000000000000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LBytes > 0 do
-    begin
-      if LBytes = (LBytes and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74]) then
-        LBinary.Append(' ');
-      LBytes := LBytes shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.UInt64EvalResultToBin(AValue: String): String;
-var
-  LInt: Uint64;
-  LBytes: Uint64;
-  LBinary: TStringBuilder;
-begin
-  LInt := StrToUInt64Def(AValue, 0);
-  LBytes := $8000000000000000;
-  Result := String.Empty;
-  LBinary := TStringBuilder.Create;
-  try
-    while LBytes > 0 do
-    begin
-      if LBytes = (LBytes and LInt) then
-        LBinary.Append('1')
-      else
-        LBinary.Append('0');
-      if (LBinary.Length in [4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74]) then
-        LBinary.Append(' ');
-      LBytes := LBytes shr 1;
-    end;
-    Result := LBinary.ToString;
-  finally
-    LBinary.Free;
-  end;
-end;
-
-class function TFormatter.FormatShortIntEvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if (VIEW_HEX = LView) then
-      String.Format('%s%s', [TVisualizerConfig.HexPrefix, ShortIntEvalResultToHex(EvalResult)])
-    else if VIEW_OCT = LView then
-      Result := ShortIntEvalResultToOct(EvalResult)
-    else if VIEW_BIN = LView then
-      Result := ShortIntEvalResultToBin(EvalResult)
-    else
-      Result := ShortIntEvalResultToDec(EvalResult);
-    LMsg := String.Format('Type: 8 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatByteEvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      String.Format('%s%s', [TVisualizerConfig.HexPrefix, ByteEvalResultToHex(Evalresult)])
-    else if VIEW_OCT = LView then
-      Result := ByteEvalResultToOct(Evalresult)
-    else if VIEW_BIN = LView then
-      Result := ByteEvalResultToBin(Evalresult)
-    else
-      Result := ByteEvalResultToDec(Evalresult);
-    LMsg := String.Format('Type: 8 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatSmallIntEvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      String.Format('%s%s', [TVisualizerConfig.HexPrefix, SmallIntEvalResultToHex(EvalResult)])
-    else if VIEW_OCT = LView then
-      Result := SmallIntEvalResultToOct(EvalResult)
-    else if VIEW_BIN = LView then
-      Result := SmallIntEvalResultToBin(EvalResult)
-    else
-      Result := SmallIntEvalResultToDec(EvalResult);
-    LMsg := String.Format('Type: 8 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatWordEvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      String.Format('%s%s', [TVisualizerConfig.HexPrefix, WordEvalResultToHex(EvalResult)])
-    else if VIEW_OCT = LView then
-      Result := WordEvalResultToOct(EvalResult)
-    else if VIEW_BIN = LView then
-      Result := WordEvalResultToBin(EvalResult)
-    else
-      Result := WordEvalResultToDec(EvalResult);
-    LMsg := String.Format('Type: 8 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatInt32EvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      Result := String.Format('%s%s', [TVisualizerConfig.HexPrefix, IntegerEvalResultToHex(Evalresult)])
-    else if VIEW_OCT = LView then
-      Result := IntegerEvalResultToOct(Evalresult)
-    else if VIEW_BIN = LView then
-      Result := IntegerEvalResultToBin(Evalresult)
-    else
-      Result := IntegerEvalResultToDec(Evalresult);
-
-    LMsg := String.Format('Type: 32 Bit Sigend Integer. EvalResult: %s. NewResult: %s. View as: %s. Prefix: %s.', [EvalResult, Result, LView, TVisualizerConfig.HexPrefix]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatUInt32EvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      String.Format('%s%s', [TVisualizerConfig.HexPrefix, CardinalEvalResultToHex(Evalresult)])
-    else if VIEW_OCT = LView then
-      Result := CardinalEvalResultToOct(Evalresult)
-    else if VIEW_BIN = LView then
-      Result := CardinalEvalResultToBin(Evalresult)
-    else
-      Result := CardinalEvalResultToDec(Evalresult);
-    LMsg := String.Format('Type: 32 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatInt64EvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      Result := String.Format('%s%s', [TVisualizerConfig.HexPrefix, Int64EvalResultToHex(Evalresult)])
-    else if VIEW_OCT = LView then
-      Result := Int64EvalResultToOct(Evalresult)
-    else if VIEW_BIN = LView then
-      Result := Int64EvalResultToBin(Evalresult)
-    else
-      Result := Int64EvalResultToDec(Evalresult);
-    LMsg := String.Format('Type: 64 Bit Sigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
-end;
-
-class function TFormatter.FormatUInt64EvalResult(EvalResult: String; AView: String = String.Empty): String;
-var
-  LMsg: String;
-  LView: String;
-begin
-  LView := AView;
-  if String.IsNullOrWhiteSpace(LView) then
-    LView := TVisualizerConfig.DefaultView;
-
-  Result := EvalResult;
-  try
-    if VIEW_HEX = LView then
-      Result := String.Format('%s%s', [TVisualizerConfig.HexPrefix, UInt64EvalResultToHex(Evalresult)])
-    else if VIEW_OCT = LView then
-      Result := UInt64EvalResultToOct(Evalresult)
-    else if VIEW_BIN = LView then
-      Result := UInt64EvalResultToBin(Evalresult)
-    else
-      Result := UInt64EvalResultToDec(Evalresult);
-    LMsg := String.Format('Type: 64 Bit Unsigend Integer. EvalResult: %s. NewResult: %s', [EvalResult, Result]);
-    OutputDebugString(PChar(LMsg));
-  except
-    on E:Exception do
-      OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
-  end;
+  if IsNegative then
+    Result := (0 - UInt64Val)
+  else
+    Result := UInt64Val;
 end;
 
 end.

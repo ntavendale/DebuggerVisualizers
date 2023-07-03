@@ -9,7 +9,7 @@ uses
   System.Classes,
   WinApi.Windows;
 
-function GetSum(Operand1, Operand2: UInt64): UInt64;
+function GetSum(Operand1, Operand2: Int64): Int64;
 var
   LSum : Int64;
 begin
@@ -32,7 +32,7 @@ begin
   try
     FEvent := CreateEvent(nil, TRUE, FALSE, nil);
     { TODO -oUser -cConsole Main : Insert code here }
-    LSumOffset := GetSum(4294967297, 4);
+    LSumOffset := GetSum(4294967297, -$04);
     Writeln('Output: ', LSumOffset);
 
     WaitForSingleObject(FEvent, INFINITE);

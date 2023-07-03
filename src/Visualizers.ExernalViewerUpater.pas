@@ -64,92 +64,118 @@ begin
 end;
 
 procedure TfmIntegerUpdater.SetGridValues(AEvalResult: String);
+var
+  LRec: TDebugIntValue;
 begin
   if ('INTEGER' =  FTypeName) or (('NATIVEINT' = FTypeName) and (4 = SizeOf(NativeInt))) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.IntegerEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.IntegerEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.IntegerEvalResultToOct(AEvalResult);
-    sgValues.Cells[1, 3] :=  TFormatter.IntegerEvalResultToBin(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(Integer));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('CARDINAL' =  FTypeName) or (('NATIVEUINT' = FTypeName) and (4 = SizeOf(NativeUInt))) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.CardinalEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.CardinalEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.CardinalEvalResultToOct(AEvalResult);
-    sgValues.Cells[1, 3] :=  TFormatter.CardinalEvalResultToBin(AEvalResult);
+    LRec := TDebugIntValue.CreateUnsigned(StrToUInt64(AEvalResult), SizeOf(Cardinal));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('SHORTINT' = FTypeName) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.ShortIntEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.ShortIntEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.ShortIntEvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(ShortInt));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('BYTE' = FTypeName) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.ByteEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.ByteEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.ByteEvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateUnsigned(StrToUInt64(AEvalResult), SizeOf(Byte));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('SMALLINT' = FTypeName) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.SmallIntEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.SmallIntEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.SmallIntEvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(SmallInt));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('WORD' = FTypeName) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.WordEvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.WordEvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.WordEvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateUnsigned(StrToUInt64(AEvalResult), SizeOf(Word));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('INT64' =  FTypeName) or (('NATIVEINT' = FTypeName) and (8 = SizeOf(NativeInt))) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.Int64EvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.Int64EvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.Int64EvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(Int64));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end
   else if ('UINT64' =  FTypeName) or (('NATIVEUINT' = FTypeName) and (4 = SizeOf(NativeUInt))) then
   begin
-    sgValues.Cells[1, 0] :=  TFormatter.UInt64EvalResultToHex(AEvalResult);
-    sgValues.Cells[1, 1] :=  TFormatter.UInt64EvalResultToDec(AEvalResult);
-    sgValues.Cells[1, 2] :=  TFormatter.UInt64EvalResultToOct(AEvalResult);
+    LRec := TDebugIntValue.CreateUnsigned(StrToUInt64(AEvalResult), SizeOf(UInt64));
+    sgValues.Cells[1, 0] :=  LRec.ToHex(TVisualizerConfig.HexPrefix, TRUE);
+    sgValues.Cells[1, 1] :=  LRec.ToDecimal;
+    sgValues.Cells[1, 2] :=  LRec.ToOct;
+    sgValues.Cells[1, 3] :=  LRec.ToBin(TRUE);
   end;
 end;
 
 procedure TfmIntegerUpdater.SetValueEdit(AEvalResult: String);
+var
+  LRec: TDebugIntValue;
 begin
   if ('INTEGER' =  FTypeName) or (('NATIVEINT' = FTypeName) and (4 = SizeOf(NativeInt))) then
   begin
-    ebValue.Text := TFormatter.FormatInt32EvalResult(AEvalResult);
-  end
-  else if ('CARDINAL' =  FTypeName) or (('NATIVEUINT' = FTypeName) and (4 = SizeOf(NativeUInt))) then
-  begin
-    ebValue.Text := TFormatter.FormatUInt32EvalResult(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(Integer));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
   end
   else if ('SHORTINT' = FTypeName) then
   begin
-    ebValue.Text := TFormatter.FormatShortIntEvalResult(AEvalResult);
-  end
-  else if ('BYTE' = FTypeName) then
-  begin
-    ebValue.Text := TFormatter.FormatByteEvalResult(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(ShortInt));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
   end
   else if ('SMALLINT' = FTypeName) then
   begin
-    ebValue.Text := TFormatter.FormatSmallIntEvalResult(AEvalResult);
-  end
-  else if ('WORD' = FTypeName) then
-  begin
-    ebValue.Text := TFormatter.FormatWordEvalResult(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(SmallInt));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
   end
   else if ('INT64' =  FTypeName) or (('NATIVEINT' = FTypeName) and (8 = SizeOf(NativeInt))) then
   begin
-    ebValue.Text := TFormatter.FormatInt64EvalResult(AEvalResult);
+    LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(Int64));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
+  end
+  else if ('CARDINAL' =  FTypeName) or (('NATIVEUINT' = FTypeName) and (4 = SizeOf(NativeUInt))) then
+  begin
+    LRec := TDebugIntValue.CreateUnsigned(StrToInt64(AEvalResult), SizeOf(Cardinal));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
+  end
+  else if ('BYTE' = FTypeName) then
+  begin
+    LRec := TDebugIntValue.CreateUnsigned(StrToInt64(AEvalResult), SizeOf(Cardinal));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
+  end
+  else if ('WORD' = FTypeName) then
+  begin
+    LRec := TDebugIntValue.CreateUnsigned(StrToInt64(AEvalResult), SizeOf(Word));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
   end
   else if ('UINT64' =  FTypeName) or (('NATIVEUINT' = FTypeName) and (4 = SizeOf(NativeUInt))) then
   begin
-    ebValue.Text := TFormatter.FormatUInt64EvalResult(AEvalResult);
+    LRec := TDebugIntValue.CreateUnsigned(StrToInt64(AEvalResult), SizeOf(UInt64));
+    ebValue.Text := LRec.Format(TVisualizerConfig.DefaultView);
   end;
 end;
 
