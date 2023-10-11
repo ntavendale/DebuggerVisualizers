@@ -25,7 +25,7 @@ package VisualizersDelphi10Pkg;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Oamaru Debugger Visualizers'}
+{$DESCRIPTION 'ATS Debugger Visualizers'}
 {$IMPLICITBUILD ON}
 
 requires

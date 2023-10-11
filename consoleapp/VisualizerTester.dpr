@@ -9,12 +9,26 @@ uses
   System.Classes,
   WinApi.Windows;
 
-function GetSum(Operand1, Operand2: Int64): Int64;
+function GetSum(Operand1, Operand2: WORD): Integer;
 var
-  LSum : Int64;
+  LSum : Integer;
 begin
   LSum := Operand1 + Operand2;
   Result := LSum + 2;
+end;
+
+procedure StringsSample;
+var
+  LTemp : TStrings;
+begin
+  LTemp := TStringList.Create;
+  try
+    LTemp.Add('Goodbye');
+    LTemp.Add('Cruel');
+    LTemp.Add('World');
+  finally
+    LTemp.Free;
+  end;
 end;
 
 var
@@ -31,8 +45,9 @@ end;
 begin
   try
     FEvent := CreateEvent(nil, TRUE, FALSE, nil);
+    StringsSample;
     { TODO -oUser -cConsole Main : Insert code here }
-    LSumOffset := GetSum(4294967297, -$04);
+    LSumOffset := GetSum(65535, $04);
     Writeln('Output: ', LSumOffset);
 
     WaitForSingleObject(FEvent, INFINITE);

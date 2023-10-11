@@ -3,7 +3,7 @@ object fmVisualizerConfig: TfmVisualizerConfig
   Top = 0
   BorderIcons = []
   BorderStyle = bsSingle
-  Caption = 'Oamru Visualizer Config'
+  Caption = 'ATS Visualizer Config'
   ClientHeight = 141
   ClientWidth = 336
   Color = clBtnFace
@@ -24,7 +24,6 @@ object fmVisualizerConfig: TfmVisualizerConfig
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 197
     object pcMain: TPageControl
       Left = 0
       Top = 0
@@ -33,10 +32,8 @@ object fmVisualizerConfig: TfmVisualizerConfig
       ActivePage = tsIntegers
       Align = alClient
       TabOrder = 0
-      ExplicitWidth = 197
       object tsIntegers: TTabSheet
         Caption = 'Integers && Bytes'
-        ExplicitWidth = 189
         object gbDefaults: TGroupBox
           Left = 3
           Top = 0
@@ -89,7 +86,6 @@ object fmVisualizerConfig: TfmVisualizerConfig
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 197
     object pnButtons: TPanel
       Left = 162
       Top = 0
@@ -97,7 +93,6 @@ object fmVisualizerConfig: TfmVisualizerConfig
       Height = 35
       Align = alRight
       TabOrder = 0
-      ExplicitLeft = 23
       object btnOK: TBitBtn
         Left = 7
         Top = 4

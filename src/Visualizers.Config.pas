@@ -15,7 +15,7 @@ const
   HEX_PREFIX_CPP    = '0x';
   HEX_PREFIX_DELPHI = '$';
 
-  VISUALIZER_IDENTIFIER = 'OamaruVisualizer';
+  VISUALIZER_IDENTIFIER = 'ATSVisualizer';
 
 type
   TVisualizerConfig = class

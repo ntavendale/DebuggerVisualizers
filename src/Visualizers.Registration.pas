@@ -7,6 +7,7 @@ uses
   Visualizers.Debugger, Visualizers.Config, Visualizers.Wizard;
 
 procedure Register;
+procedure UnRegister;
 function InitialiseVisualizer(BIDES : IBorlandIDEServices) : TDebuggerVisualizer;
 function InitialiseWizard(BIDES : IBorlandIDEServices) : TVisualizersWizard;
 
@@ -19,16 +20,41 @@ var
 procedure Register;
 var
   LWizard: TVisualizersWizard;
+  DbgSvc: IOTADebuggerServices;
+  WizSvc: IOTAWizardServices;
 begin
   TVisualizerConfig.IsDll := FALSE;
-
   // Set up Debugger Visualizer
   FVisualizer := InitialiseVisualizer(BorlandIDEServices);
-  (BorlandIDEServices As IOTADebuggerServices).RegisterDebugVisualizer(FVisualizer);
+  if Supports(BorlandIDEServices, IOTADebuggerServices, DbgSvc) then
+  begin
+    DbgSvc.RegisterDebugVisualizer(FVisualizer);
+    if Supports(BorlandIDEServices, IOTAWizardServices, WizSvc) then
+    begin
+      // Add help menu item to adjust defaults
+      LWizard := InitialiseWizard(BorlandIDEServices);
+      FWizardIndex := WizSvc.AddWizard(LWizard);
+    end else
+    begin
+      DbgSvc.UnregisterDebugVisualizer(FVisualizer);
+      OutputDebugString('IOTAWizardServices Not Supported');
+    end;
+  end else
+    OutputDebugString('IOTADebuggerServices Not Supported');
+end;
 
-  // Add help menu item to adjust defaults
-  LWizard := InitialiseWizard(BorlandIDEServices);
-  FWizardIndex := (BorlandIDEServices As IOTAWizardServices).AddWizard(LWizard);
+(** Removes the visualizer using the Debugger services If FWiardIndex > 0. **)
+procedure UnRegister;
+var
+  DbgSvc: IOTADebuggerServices;
+  WizSvc: IOTAWizardServices;
+begin
+  if (FWizardIndex > 0) and Supports(BorlandIDEServices, IOTAWizardServices, WizSvc) then
+  begin
+    WizSvc.RemoveWizard(FWizardIndex);
+    if Supports(BorlandIDEServices, IOTADebuggerServices, DbgSvc) then
+      DbgSvc.UnregisterDebugVisualizer(FVisualizer);
+  end;
 end;
 
 function InitialiseVisualizer(BIDES : IBorlandIDEServices) : TDebuggerVisualizer;
@@ -47,13 +73,8 @@ end;
 
 (** Do nothing **)
 initialization
-(** Removes the visualizer using the Debugger services IF FWiardIndex > 0. **)
+
 finalization
-  if not TVisualizerConfig.IsDll then
-  begin
-    (BorlandIDEServices As IOTADebuggerServices).UnregisterDebugVisualizer(FVisualizer);
-    if FWizardIndex > 0 Then
-    (BorlandIDEServices As IOTAWizardServices).RemoveWizard(FWizardIndex);
-  end;
+  if not TVisualizerConfig.IsDll then UnRegister;
 
 end.

@@ -5,16 +5,21 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ToolsApi, Vcl.Grids,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Visualizers.Config, Visualizers.Formatter;
+  Vcl.StdCtrls, Vcl.ExtCtrls, Visualizers.Config, Visualizers.Formatter,
+  Vcl.ComCtrls;
 
 type
   TfmIntegerUpdater = class(TForm, IOTADebuggerVisualizerExternalViewerUpdater)
-    Panel1: TPanel;
+    pcMain: TPageControl;
+    tsVisualizer: TTabSheet;
     pnBottom: TPanel;
     gbValues: TGroupBox;
     sgValues: TStringGrid;
+    Panel1: TPanel;
     gbValue: TGroupBox;
     ebValue: TEdit;
+    tsIDEInfo: TTabSheet;
+    memIDEInfo: TMemo;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sgValuesSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
@@ -24,19 +29,24 @@ type
     FTypeName: String;
     procedure SetGridValues(AEvalResult: String);
     procedure SetValueEdit(AEvalResult: String);
+    procedure GetIDEInfo;
   public
     constructor Create(AOwner: TComponent; const AExpression, ATypeName, AEvalResult: string); reintroduce;
     { Public declarations }
+
     { Called when the visualizer should be closed (because the thread that
       created it has gone away) }
     procedure CloseVisualizer;
+
     { Called when the process is running or otherwise in a state where it is
       unable to show data.  The recommended action is to show "Process not
       accessible", "Out of scope", or something similar (like is shown in the
       Watch window) }
     procedure MarkUnavailable(Reason: TOTAVisualizerUnavailableReason);
+
     { Called when the data for the visualizer needs to be refreshed }
     procedure RefreshVisualizer(const Expression, TypeName, EvalResult: string);
+
     { Called to set a callback that should be called to let the debugger know
       that the external viewer has been closed.  The CloseProc is a debugger-
       provided procedure that the visualizer UI should call when the user closes
@@ -60,13 +70,16 @@ begin
   SetGridValues(AEvalResult);
   Self.Caption := String.Format('%s (%s)', [AExpression, ATypeName]);
   gbValues.Caption := String.Format('%s (%s)', [AExpression, ATypeName]);
+  pcMain.ActivePageIndex := 0;
   SetValueEdit(AEvalResult);
+  GetIDEInfo;
 end;
 
 procedure TfmIntegerUpdater.SetGridValues(AEvalResult: String);
 var
   LRec: TDebugIntValue;
 begin
+  OutputDebugString(PChar('Set Grid Values for ' + AEvalResult));
   if ('INTEGER' =  FTypeName) or (('NATIVEINT' = FTypeName) and (4 = SizeOf(NativeInt))) then
   begin
     LRec := TDebugIntValue.CreateSigned(StrToInt64(AEvalResult), SizeOf(Integer));
@@ -179,8 +192,60 @@ begin
   end;
 end;
 
+procedure TfmIntegerUpdater.GetIDEInfo;
+var
+  i: Integer;
+  LServices: IOTAServices;
+begin
+   memIDEInfo.Lines.Clear;
+  if Supports(BorlandIDEServices, IOTAServices, LServices) then
+  begin
+    memIDEInfo.Lines.Add('Startup Directory:');
+    memIDEInfo.Lines.Add(LServices.GetStartupDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Preferred UI Languages:');
+    memIDEInfo.Lines.Add(LServices.GetIDEPreferredUILanguages);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Application Data Directory:');
+    memIDEInfo.Lines.Add(LServices.GetApplicationDataDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Local Application Data Directory:');
+    memIDEInfo.Lines.Add(LServices.GetLocalApplicationDataDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Root Directory:');
+    memIDEInfo.Lines.Add(LServices.GetRootDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Bin Directory:');
+    memIDEInfo.Lines.Add(LServices.GetBinDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Template Directory:');
+    memIDEInfo.Lines.Add(LServices.GetTemplateDirectory);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Active Designer Type:');
+    memIDEInfo.Lines.Add(LServices.GetActiveDesignerType);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Base Registry Key:');
+    memIDEInfo.Lines.Add(LServices.GetBaseRegistryKey);
+    memIDEInfo.Lines.Add(String.Empty);
+
+    memIDEInfo.Lines.Add('Product Identifier:');
+    memIDEInfo.Lines.Add(LServices.GetProductIdentifier);
+    memIDEInfo.Lines.Add(String.Empty);
+  end else
+    memIDEInfo.Lines.Add('IOTAServices Not Supported!!');
+end;
+
 procedure TfmIntegerUpdater.CloseVisualizer;
 begin
+  OutputDebugString(PChar('Close Visualizer called by IDE'));
   Self.Close;
 end;
 
@@ -188,7 +253,12 @@ procedure TfmIntegerUpdater.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   if Assigned(FClosedCallback) then
+  begin
+    OutputDebugString(PChar('CloseCallback running'));
     FClosedCallback;
+  end else
+    OutputDebugString(PChar('CloseCallback not assigned'));
+
   Action := caFree;
 end;
 

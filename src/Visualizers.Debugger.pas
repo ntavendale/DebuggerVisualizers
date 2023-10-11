@@ -19,7 +19,12 @@ uses
   IOTADebuggerVisualizerValueReplacer
   ===================================
   Implementing this interface allows us to control what a developer sees when
-  hovering the mouse over a variable in the IDE as well as the.
+  hovering the mouse over a variable in the IDE as well as in the evaluator.
+
+  IOTADebuggerVisualizerExternalViewer
+  ====================================
+  Implementing this interface allows us to control what a developer sees when
+  hovering the mouse over a variable in the IDE as well as in the evaluator.
 }
 
 type
@@ -139,7 +144,7 @@ end;
 { Implementation of IOTADebuggerVisualizer.GetVisualizerName }
 function TDebuggerVisualizer.GetVisualizerName: string;
 begin
-  Result := 'Oamaru Integer Visualizer';
+  Result := 'ATS Integer Visualizer';
 end;
 
 { Implementation of IOTADebuggerVisualizer.GetVisualizerDescription }
@@ -206,7 +211,7 @@ end;
 
 function TDebuggerVisualizer.GetMenuText: string;
 begin
-  Result := 'Oamaru Integer Viewer'
+  Result := 'ATS Integer Viewer';
 end;
 
 function TDebuggerVisualizer.Show(const Expression, TypeName, EvalResult: string; SuggestedLeft, SuggestedTop: Integer): IOTADebuggerVisualizerExternalViewerUpdater;
