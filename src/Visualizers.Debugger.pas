@@ -36,12 +36,18 @@ type
   { Private declarations }
   public
     { Public declarations }
+
+    { IOTADebuggerVisualizer }
     function GetSupportedTypeCount: Integer;
     procedure GetSupportedType(Index: Integer; var TypeName: string; var AllDescendants: Boolean); overload;
     function GetVisualizerIdentifier: string;
     function GetVisualizerName: string;
     function GetVisualizerDescription: string;
+
+    { IOTADebuggerVisualizerValueReplacer }
     function GetReplacementValue(const Expression, TypeName, EvalResult: string): string;
+
+    { IOTADebuggerVisualizerExternalViewer }
     function GetMenuText: string;
     { Show is called when the user selects this visualizer type from the list
       of the installed visualizers for a given type.  You should create and
@@ -150,7 +156,7 @@ end;
 { Implementation of IOTADebuggerVisualizer.GetVisualizerDescription }
 function TDebuggerVisualizer.GetVisualizerDescription: string;
 begin
-  Result := 'Integer Value Visualizer';
+  Result := 'Integer Value Visualizer For Viewing Integers As Decimal, Hex, Binary, And Octal';
 end;
 
 { Implementation of IOTADebuggerVisualizerValueReplacer.GetReplacementValue }
@@ -164,56 +170,36 @@ begin
   try
     Result := EvalResult;
     if ('INTEGER' =  LUpperType) or (('NATIVEINT' = TypeName) and (4 = SizeOf(NativeInt))) then
-    begin
-      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(Integer));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(Integer))
     else if ('SHORTINT' = LUpperType) then
-    begin
-      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(ShortInt));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(ShortInt))
     else if ('SMALLINT' = LUpperType) then
-    begin
-      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(SmallInt));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(SmallInt))
     else if ('INT64' =  LUpperType) or (('NATIVEINT' = TypeName) and (8 = SizeOf(NativeInt))) then
-    begin
-      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(Int64));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateSigned(StrToInt64(EvalResult), SizeOf(Int64))
     else if ('CARDINAL' =  LUpperType) or (('NATIVEUINT' = TypeName) and (4 = SizeOf(NativeUInt))) then
-    begin
-      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Cardinal));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Cardinal))
     else if ('BYTE' = LUpperType) then
-    begin
-      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Byte));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Byte))
     else if ('WORD' = LUpperType) then
-    begin
-      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Word));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end
+      LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(Word))
     else if ('UINT64' =  LUpperType) or (('NATIVEUINT' = TypeName) and (8 = SizeOf(NativeInt))) then
-    begin
       LRec := TDebugIntValue.CreateUnsigned(StrToInt64(EvalResult), SizeOf(UInt64));
-      Result := LRec.Format(TVisualizerConfig.DefaultView);
-    end;
+
+    Result := LRec.Format(TVisualizerConfig.DefaultView);
   except
     on E:Exception do
       OutputDebugString(PChar(String.Format('%s: %s', [E.ClassType.ClassName + ': ' + E.Message])));
   end;
 end;
 
+{ Implementation of IOTADebuggerVisualizerExternalViewer.GetMenuText }
 function TDebuggerVisualizer.GetMenuText: string;
 begin
   Result := 'ATS Integer Viewer';
 end;
 
+{ Implementation of IOTADebuggerVisualizerExternalViewer.Show }
 function TDebuggerVisualizer.Show(const Expression, TypeName, EvalResult: string; SuggestedLeft, SuggestedTop: Integer): IOTADebuggerVisualizerExternalViewerUpdater;
 var
   fm: TfmIntegerUpdater;

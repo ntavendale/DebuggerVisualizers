@@ -105,7 +105,7 @@ begin
   LKey := String.Format('Software\Oamaru\Delphi\OTA\%s\%s', [GetVer, VISUALIZER_IDENTIFIER]);
   LReg := TRegistry.Create(KEY_READ);
   try
-    LReg.RootKey:= HKEY_CURRENT_USER;
+    LReg.RootKey := HKEY_CURRENT_USER;
     if LReg.OpenKey(LKey, FALSE) then
     begin
       LData := LReg.ReadString('DebuggerConfig');
