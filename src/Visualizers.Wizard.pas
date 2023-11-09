@@ -3,7 +3,7 @@ unit Visualizers.Wizard;
 interface
 
 uses
-  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Dialogs, ToolsAPI,
+  System.SysUtils, System.Classes, System.UITypes, Vcl.Forms, Vcl.Dialogs, ToolsAPI,
   WinApi.Windows, Visualizers.Config.Form, Visualizers.Config, DeploymentAPI;
 
 
@@ -43,8 +43,8 @@ begin
   OutputDebugString('In Execute');
   LForm := TfmVisualizerConfig.Create(nil);
   try
-    LForm.ShowModal;
-    TVisualizerConfig.Load;
+    if mrOK = LForm.ShowModal then
+      TVisualizerConfig.Load;
   finally
     LForm.Free;
   end;
